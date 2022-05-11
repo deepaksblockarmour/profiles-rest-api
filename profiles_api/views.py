@@ -8,7 +8,7 @@ from profile_api import seriallizers
 
 class HelloApiView(APIView):
     '''test api view'''
-    serializer_class=serializer.HelloSerializer
+    serializer_class=serializers.HelloSerializer
 
 
     def get(self,request,format=None):
