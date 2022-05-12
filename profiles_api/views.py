@@ -1,8 +1,11 @@
+from email import message
 from unicodedata import name
 from urllib import response
+from requests import request
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 
 from profiles_api import serializers
 
@@ -45,3 +48,45 @@ class HelloApiView(APIView):
     def delete(self,request,pk=None):
         """handles deleting data"""
         return Response({"method":'DELETE'})    
+
+class HelloViewSet(viewsets.ViewSet):
+    serializer_class=serializers.HelloSerializer
+    """test api viewset"""
+    def list(self,request):
+        """ Returns a hello message"""
+        a_viewset=[
+            'uses acrions(list,create,update,partial_update)',
+            'automatically maps to urls using Routers',
+            'provides more functionality with less code'
+        ]
+        return Response({'message':'hello!',"a_viewset":a_viewset})
+    
+    def create(self,request):
+        """create a new hello message"""
+        serializer=self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            name=serializer._validated_data.get("name")
+            message=f"hello{name}!"
+            return Response({"message":message})
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+    def retrive(self,request,pk=None):
+        '''handle getting an object by its ID'''
+        return Response({"http_method":"GET"})
+        
+    def update(self,request,pk=None):
+        '''handle updating an object'''
+        return Response({"http_method":"PUT"})
+        
+    def partial_update(self,request,pk=None):
+        '''handle updating partially an object by its ID'''
+        return Response({"http_method":"PATCH"})
+        
+    def destroy(self,request,pk=None):
+        '''handle removing an object by its ID'''
+        return Response({"http_method":"DESTROY "})
